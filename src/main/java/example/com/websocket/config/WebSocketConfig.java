@@ -3,6 +3,7 @@ package example.com.websocket.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -44,7 +45,22 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+    	// Xem source code main.js sẽ hiểu ngay
+    	
+    	/**
+    	 *  stomp_url context đăng ký nhận STOMP url phía server
+    	 *  Prefix = "/app"
+    	 *   @MessageMapping("/chat.sendMessage")  client gửi:  stomp_url = "/app/chat.sendMessage"
+    	 */ 	
         registry.setApplicationDestinationPrefixes("/app");
+        
+        /**
+         * đây là Security filter STOMP message thôi (ko có cũng ko sao)
+         * Server chi cho phép STOM url = "/topic/*" đc gưi đi. Các URL khac sẽ ko cho phep gui đi
+         * vd: STOMP url = "/topic/publicChatRoom" cho phép đi qua
+         * vd: STOMP url = "/abc/publicChatRoom sẽ ko cho qua
+         * 
+         */
         registry.enableSimpleBroker("/topic");
     }
  

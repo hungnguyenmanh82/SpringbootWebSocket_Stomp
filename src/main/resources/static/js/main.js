@@ -28,10 +28,12 @@ connect();
  
 function onConnected() {
     // Subscribe to the Public Topic
-	// "/topic/publicChatRoom" ko phải là http URI => là Address giao tiếp qua websocket Broker
+	// "/topic/publicChatRoom" là STOMP url,  ko phải là http URI => là Address giao tiếp qua websocket Broker
+	// server phai send message voi stomp_url nhu tren (body message cung la Json) 
     stompClient.subscribe('/topic/publicChatRoom', onMessageReceived);
  
     // Tell your username to the server
+    // "/app/chat.addUser" là STOMP url, ko phải Http url => trên Server phai subscribe URL nay
     stompClient.send("/app/chat.addUser",
         {},
         JSON.stringify({sender: username, type: 'JOIN'})
@@ -55,6 +57,8 @@ function sendMessage(event) {
             content: messageInput.value,
             type: 'CHAT'
         };
+        
+        // "/app/chat.sendMessage" là STOMP url, ko phai http url
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
